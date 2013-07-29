@@ -41,6 +41,7 @@ import com.android.systemui.quicksettings.BatteryTile;
 import com.android.systemui.quicksettings.BluetoothTile;
 import com.android.systemui.quicksettings.BrightnessTile;
 import com.android.systemui.quicksettings.BugReportTile;
+import com.android.systemui.quicksettings.TorchTile;
 import com.android.systemui.quicksettings.GPSTile;
 import com.android.systemui.quicksettings.InputMethodTile;
 import com.android.systemui.quicksettings.MobileNetworkTile;
@@ -94,6 +95,7 @@ public class QuickSettingsController {
     public static final String TILE_NETWORKMODE = "toggleNetworkMode";
     public static final String TILE_AUTOROTATE = "toggleAutoRotate";
     public static final String TILE_AIRPLANE = "toggleAirplane";
+    public static final String TILE_TORCH = "toggleFlashlight";  // Keep old string for compatibility
     public static final String TILE_SLEEP = "toggleSleepMode";
     public static final String TILE_LTE = "toggleLte";
     public static final String TILE_WIMAX = "toggleWimax";
@@ -140,9 +142,11 @@ public class QuickSettingsController {
     public static final int ALARM_TILE = 16;
     public static final int BUG_REPORT_TILE = 17;
     public static final int WIFI_DISPLAY_TILE = 18;
-    public static final int WIFIAP_TILE = 19;
-    public static final int MOBILE_DATA_TILE = 20;
-    public static final int SYNC_TILE = 21;
+    public static final int TORCH_TILE = 19;
+    public static final int WIFIAP_TILE = 20;
+    public static final int MOBILE_DATA_TILE = 21;
+    public static final int SYNC_TILE = 22;
+
     public static final int USER_TILE = 99;
     private InputMethodTile IMETile;
 
@@ -210,8 +214,8 @@ public class QuickSettingsController {
                 mQuickSettings.add(AUTO_ROTATION_TILE);
             } else if (tile.equals(TILE_AIRPLANE)) {
                 mQuickSettings.add(AIRPLANE_MODE_TILE);
-            } else if (tile.equals(TILE_WIMAX)) {
-                // Not available yet
+            } else if (tile.equals(TILE_TORCH)) {
+                mQuickSettings.add(TORCH_TILE);
             } else if (tile.equals(TILE_LTE)) {
                 // Not available yet
             } else if (tile.equals(TILE_MOBILEDATA)) {
@@ -420,6 +424,10 @@ public class QuickSettingsController {
             case USER_TILE:
                 qs = new UserTile(mContext, inflater,
                         (QuickSettingsContainerView) mContainerView, this);
+                break;
+            case TORCH_TILE:
+                qs = new TorchTile(mContext, inflater,
+                        (QuickSettingsContainerView) mContainerView, this, mHandler);
                 break;
             case WIFIAP_TILE:
                 qs = new WifiAPTile(mContext, inflater,
