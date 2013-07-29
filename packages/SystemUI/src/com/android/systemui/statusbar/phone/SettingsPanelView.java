@@ -42,7 +42,7 @@ import com.android.systemui.statusbar.policy.NetworkController;
 public class SettingsPanelView extends PanelView {
     public static final boolean DEBUG_GESTURES = true;
 
-    private QuickSettings mQS;
+    private QuickSettingsController mQS;
     private QuickSettingsContainerView mQSContainer;
 
     Drawable mHandleBar;
@@ -63,9 +63,12 @@ public class SettingsPanelView extends PanelView {
         mHandleBar = resources.getDrawable(R.drawable.status_bar_close);
         mHandleBarHeight = resources.getDimensionPixelSize(R.dimen.close_handle_height);
         mHandleView = findViewById(R.id.handle);
+
+        setContentDescription(resources.getString(R.string.accessibility_desc_quick_settings));
+
     }
 
-    public void setQuickSettings(QuickSettings qs) {
+    public void setQuickSettings(QuickSettingsController qs) {
         mQS = qs;
     }
 
@@ -87,8 +90,7 @@ public class SettingsPanelView extends PanelView {
     public void setup(NetworkController networkController, BluetoothController bluetoothController,
             BatteryController batteryController, LocationController locationController) {
         if (mQS != null) {
-            mQS.setup(networkController, bluetoothController, batteryController,
-                    locationController);
+            mQS.setupQuickSettings();
         }
     }
 
