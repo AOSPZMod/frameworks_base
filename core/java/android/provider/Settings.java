@@ -2751,7 +2751,11 @@ public final class Settings {
         */
         public static final String EXPANDED_FLASH_MODE = "expanded_flash_mode";
 
-
+		/**
+        * Custom Network Mode
+        * @hide
+        */
+        public static final String EXPANDED_NETWORK_MODE = "expanded_network_mode";
     }
 
     /**
