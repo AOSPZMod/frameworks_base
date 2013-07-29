@@ -61,7 +61,6 @@ import com.android.systemui.quicksettings.VibrationModeTile;
 import com.android.systemui.quicksettings.WiFiDisplayTile;
 import com.android.systemui.quicksettings.WiFiTile;
 import com.android.systemui.quicksettings.WifiAPTile;
-import com.android.systemui.statusbar.powerwidget.PowerButton;
 
 public class QuickSettingsController {
     private static String TAG = "QuickSettingsController";
