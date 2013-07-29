@@ -89,9 +89,9 @@ public class GPSTile extends QuickSettingsTile implements LocationGpsStateChange
         if(enabled && working){
             mDrawable = R.drawable.ic_qs_location;
         }else if(enabled){
-            mDrawable = R.drawable.ic_qs_gps_on;
-        }else{
             mDrawable = R.drawable.ic_qs_gps_off;
+        }else{
+            mDrawable = R.drawable.ic_qs_gps_on;
         }
         updateQuickSettings();
     }
