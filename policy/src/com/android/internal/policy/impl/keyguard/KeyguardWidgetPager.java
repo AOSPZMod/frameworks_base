@@ -142,6 +142,10 @@ public class KeyguardWidgetPager extends PagedView implements PagedView.PageSwit
             ViewGroup vg = (ViewGroup) newPage;
             if (vg.getChildAt(0) instanceof KeyguardStatusView) {
                 showingClock = true;
+            } else if (vg.getChildAt(0) instanceof AppWidgetHostView) {
+                String widgetPackage = ((AppWidgetHostView) vg.getChildAt(0))
+                        .getAppWidgetInfo().provider.getPackageName();
+                showingClock = widgetPackage.equals("com.cyanogenmod.lockclock");
             }
         }
 
