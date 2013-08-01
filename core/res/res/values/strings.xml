@@ -4112,4 +4112,25 @@
     <!-- Message informing user that the requested activity could not be found [CHAR LIMIT=none] -->
     <string name="app_not_found">No application found to handle this action</string>
     <string name="revoke">Revoke</string>
+	
+	<!-- Reboot -->
+    <string name="reboot">Reboot</string>
+
+    <!-- Reboot recovery option -->
+    <string name="reboot_recovery">Recovery</string>
+
+    <!-- Reboot recovery option -->
+    <string name="reboot_download">Download</string>
+
+    <!-- Reboot recovery option -->
+    <string name="reboot_bootloader">Bootloader</string>
+
+    <!-- Rebooting message -->
+    <string name="reboot_progress">Your device is rebooting</string>
+
+    <!-- label for item that screenshots in phone options dialog -->
+    <string name="global_action_screenshot">Screenshot</string>
+
+    <!-- label for item that torches in phone options dialog -->
+    <string name="global_action_torch">Torch</string>
 </resources>
