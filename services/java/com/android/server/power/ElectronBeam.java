@@ -710,7 +710,7 @@ final class ElectronBeam {
      * callback can be invoked on any thread, not necessarily the thread that
      * owns the electron beam.
      */
-    private static final class NaturalSurfaceLayout implements DisplayTransactionListener {
+    private final class NaturalSurfaceLayout implements DisplayTransactionListener {
         private final DisplayManagerService mDisplayManager;
         private SurfaceControl mSurfaceControl;
 
