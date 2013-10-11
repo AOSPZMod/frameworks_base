@@ -72,7 +72,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.nio.charset.Charsets;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -467,15 +467,15 @@ public class Vpn extends BaseNetworkStateTracker {
     private native int jniCheck(String interfaze);
     private native void jniProtect(int socket, String interfaze);
 
-    private static String findLegacyVpnGateway(LinkProperties prop) {
-        for (RouteInfo route : prop.getRoutes()) {
+    private static RouteInfo findIPv4DefaultRoute(LinkProperties prop) {
+        for (RouteInfo route : prop.getAllRoutes()) {
             // Currently legacy VPN only works on IPv4.
             if (route.isDefaultRoute() && route.getGateway() instanceof Inet4Address) {
-                return route.getGateway().getHostAddress();
+                return route;
             }
         }
 
-        throw new IllegalStateException("Unable to find suitable gateway");
+        throw new IllegalStateException("Unable to find IPv4 default gateway");
     }
 
     /**
@@ -488,8 +488,9 @@ public class Vpn extends BaseNetworkStateTracker {
             throw new IllegalStateException("KeyStore isn't unlocked");
         }
 
-        final String iface = egress.getInterfaceName();
-        final String gateway = findLegacyVpnGateway(egress);
+        final RouteInfo ipv4DefaultRoute = findIPv4DefaultRoute(egress);
+        final String gateway = ipv4DefaultRoute.getGateway().getHostAddress();
+        final String iface = ipv4DefaultRoute.getInterface();
 
         // Load certificates.
         String privateKey = "";
@@ -499,15 +500,15 @@ public class Vpn extends BaseNetworkStateTracker {
         if (!profile.ipsecUserCert.isEmpty()) {
             privateKey = Credentials.USER_PRIVATE_KEY + profile.ipsecUserCert;
             byte[] value = keyStore.get(Credentials.USER_CERTIFICATE + profile.ipsecUserCert);
-            userCert = (value == null) ? null : new String(value, Charsets.UTF_8);
+            userCert = (value == null) ? null : new String(value, StandardCharsets.UTF_8);
         }
         if (!profile.ipsecCaCert.isEmpty()) {
             byte[] value = keyStore.get(Credentials.CA_CERTIFICATE + profile.ipsecCaCert);
-            caCert = (value == null) ? null : new String(value, Charsets.UTF_8);
+            caCert = (value == null) ? null : new String(value, StandardCharsets.UTF_8);
         }
         if (!profile.ipsecServerCert.isEmpty()) {
             byte[] value = keyStore.get(Credentials.USER_CERTIFICATE + profile.ipsecServerCert);
-            serverCert = (value == null) ? null : new String(value, Charsets.UTF_8);
+            serverCert = (value == null) ? null : new String(value, StandardCharsets.UTF_8);
         }
         if (privateKey == null || userCert == null || caCert == null || serverCert == null) {
             throw new IllegalStateException("Cannot load credentials");
@@ -819,7 +820,7 @@ public class Vpn extends BaseNetworkStateTracker {
                     // Send over the arguments.
                     OutputStream out = mSockets[i].getOutputStream();
                     for (String argument : arguments) {
-                        byte[] bytes = argument.getBytes(Charsets.UTF_8);
+                        byte[] bytes = argument.getBytes(StandardCharsets.UTF_8);
                         if (bytes.length >= 0xFFFF) {
                             throw new IllegalArgumentException("Argument is too large");
                         }

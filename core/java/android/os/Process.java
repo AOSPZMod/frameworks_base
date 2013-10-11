@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
+import libcore.io.Libcore;
+
 /*package*/ class ZygoteStartFailedEx extends Exception {
     /**
      * Something prevented the zygote process startup from happening normally
@@ -374,7 +376,7 @@ public class Process {
      * @param gids Additional group-ids associated with the process.
      * @param debugFlags Additional flags.
      * @param targetSdkVersion The target SDK version for the app.
-     * @param seInfo null-ok SE Android information for the new process.
+     * @param seInfo null-ok SELinux information for the new process.
      * @param zygoteArgs Additional arguments to supply to the zygote process.
      * 
      * @return An object that describes the result of the attempt to start the process.
@@ -554,7 +556,7 @@ public class Process {
      * new process should setgroup() to.
      * @param debugFlags Additional flags.
      * @param targetSdkVersion The target SDK version for the app.
-     * @param seInfo null-ok SE Android information for the new process.
+     * @param seInfo null-ok SELinux information for the new process.
      * @param extraArgs Additional arguments to supply to the zygote process.
      * @return An object that describes the result of the attempt to start the process.
      * @throws ZygoteStartFailedEx if process start failed for any reason
@@ -647,13 +649,17 @@ public class Process {
      * Returns the identifier of this process, which can be used with
      * {@link #killProcess} and {@link #sendSignal}.
      */
-    public static final native int myPid();
+    public static final int myPid() {
+        return Libcore.os.getpid();
+    }
 
     /**
      * Returns the identifier of the calling thread, which be used with
      * {@link #setThreadPriority(int, int)}.
      */
-    public static final native int myTid();
+    public static final int myTid() {
+        return Libcore.os.gettid();
+    }
 
     /**
      * Returns the identifier of this process's uid.  This is the kernel uid
@@ -661,7 +667,9 @@ public class Process {
      * app-specific sandbox.  It is different from {@link #myUserHandle} in that
      * a uid identifies a specific app sandbox in a specific user.
      */
-    public static final native int myUid();
+    public static final int myUid() {
+        return Libcore.os.getuid();
+    }
 
     /**
      * Returns this process's user handle.  This is the
