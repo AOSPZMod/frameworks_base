@@ -101,6 +101,15 @@
                     android:layout_width="wrap_content"
                     android:paddingStart="4dip"
                     />
+				<TextView
+            		android:id="@+id/battery_text"
+		    		android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+            		android:layout_height="wrap_content"
+            		android:layout_width="wrap_content"
+            		android:paddingStart="4dip"
+		    		android:singleLine="true"
+		    		android:visibility="gone" 
+		   		/>
             </LinearLayout>
     
             <com.android.systemui.statusbar.policy.Clock

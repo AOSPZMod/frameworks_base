@@ -2403,6 +2403,10 @@ public final class Settings {
          */
         public static final String STATUS_NAV_BAR_ALPHA_MODE = "status_nav_bar_alpha_mode";
 
+
+		public static final String STATUSBAR_BATTERY_ICON = "status_battery_icon";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
