@@ -2403,7 +2403,6 @@ public final class Settings {
          */
         public static final String STATUS_NAV_BAR_ALPHA_MODE = "status_nav_bar_alpha_mode";
 
-
 		public static final String STATUSBAR_BATTERY_ICON = "status_battery_icon";
 
         /**
