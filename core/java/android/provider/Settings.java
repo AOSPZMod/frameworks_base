@@ -2402,7 +2402,8 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_NAV_BAR_ALPHA_MODE = "status_nav_bar_alpha_mode";
-
+        
+        /**                          
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
