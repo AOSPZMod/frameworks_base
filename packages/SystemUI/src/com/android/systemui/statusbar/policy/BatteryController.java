@@ -165,6 +165,9 @@ public class BatteryController extends BroadcastReceiver {
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUSBAR_BATTERY_ICON), false,
                     this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUSBAR_COLOR), false,
+                    this);         
         }
 
         @Override
@@ -178,7 +181,10 @@ public class BatteryController extends BroadcastReceiver {
         ContentResolver resolver = mContext.getContentResolver();
         mBatteryStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_BATTERY_ICON, 1);
-
+        int iconColor = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_COLOR,-1);
+                
+        mBatteryText.setTextColor(iconColor);     
         switch (mBatteryStyle) {
             case 1:
 		  		mBatteryText.setVisibility(View.VISIBLE);
