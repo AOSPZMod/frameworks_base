@@ -237,7 +237,6 @@ public class SignalClusterView
         mMobileType.setVisibility(
                 !mWifiVisible ? View.VISIBLE : View.GONE);
     }
-}
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
