@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
+import android.graphics.PorterDuff;
 import com.android.systemui.statusbar.policy.NetworkController;
 
 import com.android.systemui.R;
