@@ -16,6 +16,10 @@
 
 package com.android.systemui.statusbar.policy;
 
+import android.content.ContentResolver;
+import android.database.ContentObserver;
+import android.os.Handler;
+import android.provider.Settings;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -63,6 +67,10 @@ public class Clock extends TextView {
 
     private static final int AM_PM_STYLE = AM_PM_STYLE_GONE;
 
+	Handler mHandler;
+
+    private SettingsObserver mSettingsObserver;
+	
     public Clock(Context context) {
         this(context, null);
     }
@@ -73,6 +81,7 @@ public class Clock extends TextView {
 
     public Clock(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+		mSettingsObserver = new SettingsObserver(mHandler);
     }
 
     @Override
@@ -90,6 +99,9 @@ public class Clock extends TextView {
             filter.addAction(Intent.ACTION_USER_SWITCHED);
 
             getContext().registerReceiver(mIntentReceiver, filter, null, getHandler());
+			
+			mHandler = new Handler();
+			mSettingsObserver.observe();
         }
 
         // NOTE: It's safe to do these after registering the receiver since the receiver always runs
@@ -97,7 +109,7 @@ public class Clock extends TextView {
 
         // The time zone may have changed while the receiver wasn't registered, so update the Time
         mCalendar = Calendar.getInstance(TimeZone.getDefault());
-
+		
         // Make sure we update to the current time
         updateClock();
     }
@@ -107,6 +119,7 @@ public class Clock extends TextView {
         super.onDetachedFromWindow();
         if (mAttached) {
             getContext().unregisterReceiver(mIntentReceiver);
+			getContext().getContentResolver().unregisterContentObserver(mSettingsObserver);
             mAttached = false;
         }
     }
@@ -135,6 +148,7 @@ public class Clock extends TextView {
     final void updateClock() {
         mCalendar.setTimeInMillis(System.currentTimeMillis());
         setText(getSmallTime());
+		updateSettings();
     }
 
     private final CharSequence getSmallTime() {
@@ -208,5 +222,33 @@ public class Clock extends TextView {
         return result;
 
     }
+	
+	class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = getContext().getContentResolver();
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.STATUSBAR_COLOR), false,
+                    this);          
+            updateSettings();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+	
+	
+    protected void updateSettings() {
+        ContentResolver resolver = getContext().getContentResolver();
+        int iconColor = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_COLOR,-1);
+		setTextColor(iconColor); 		
+    }
+
 }
 

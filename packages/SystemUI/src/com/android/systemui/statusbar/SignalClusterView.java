@@ -16,7 +16,11 @@
 
 package com.android.systemui.statusbar;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Slog;
 import android.view.View;
@@ -24,7 +28,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
+import android.graphics.PorterDuff;
 import com.android.systemui.statusbar.policy.NetworkController;
 
 import com.android.systemui.R;
@@ -51,6 +55,10 @@ public class SignalClusterView
     ImageView mWifi, mMobile, mWifiActivity, mMobileActivity, mMobileType, mAirplane;
     View mSpacer;
 
+    Handler mHandler;
+
+    private SettingsObserver mSettingsObserver;
+
     public SignalClusterView(Context context) {
         this(context, null);
     }
@@ -61,6 +69,7 @@ public class SignalClusterView
 
     public SignalClusterView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mSettingsObserver = new SettingsObserver(mHandler);
     }
 
     public void setNetworkController(NetworkController nc) {
@@ -82,6 +91,10 @@ public class SignalClusterView
         mSpacer         =             findViewById(R.id.spacer);
         mAirplane       = (ImageView) findViewById(R.id.airplane);
 
+        mHandler = new Handler();
+
+        mSettingsObserver.observe();
+
         apply();
     }
 
@@ -96,6 +109,8 @@ public class SignalClusterView
         mMobileType     = null;
         mSpacer         = null;
         mAirplane       = null;
+
+        mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
 
         super.onDetachedFromWindow();
     }
@@ -222,5 +237,36 @@ public class SignalClusterView
         mMobileType.setVisibility(
                 !mWifiVisible ? View.VISIBLE : View.GONE);
     }
-}
 
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.STATUSBAR_COLOR), false,
+                    this);          
+            updateSettings();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
+    protected void updateSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+        int iconColor = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_COLOR,-1);
+
+        mWifi.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        mMobile.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        mAirplane.setColorFilter(iconColor);
+		mMobileType.setColorFilter(iconColor);
+		
+        apply();
+    }
+}
