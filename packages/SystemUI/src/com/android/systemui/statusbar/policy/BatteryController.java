@@ -36,6 +36,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.CharacterStyle;
+import android.graphics.PorterDuff;
 import com.android.systemui.R;
 
 public class BatteryController extends BroadcastReceiver {
@@ -113,6 +114,13 @@ public class BatteryController extends BroadcastReceiver {
 			for (int i=0; i< mIconViews.size(); i++)
 	    		mIconViews.get(i).setVisibility(visible);
     }
+
+    private void setIconsColor(int color)
+    {
+       if(mBatteryText!=null)
+			for (int i=0; i< mIconViews.size(); i++)
+	    		mIconViews.get(i).setColorFilter(color, PorterDuff.Mode.SRC_IN);
+    }
     
     private void setBatteryData(int level, boolean plugged)
     {
@@ -184,7 +192,9 @@ public class BatteryController extends BroadcastReceiver {
         int iconColor = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_COLOR,-1);
                 
-        mBatteryText.setTextColor(iconColor);     
+        mBatteryText.setTextColor(iconColor);
+        setIconsColor(iconColor);
+        
         switch (mBatteryStyle) {
             case 1:
 		  		mBatteryText.setVisibility(View.VISIBLE);
